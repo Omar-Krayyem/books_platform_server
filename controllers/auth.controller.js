@@ -20,7 +20,7 @@ const register = async (req, res) => {
         const user = new User({ username, email, password: hashedPassword });
         await user.save();
 
-        const token = jwt.sign({ username, email }, process.env.SERCRET_KEY); // Passing user data directly
+        const token = jwt.sign({ username, email }, process.env.SECRET_KEY); // Passing user data directly
 
         res.send({ status: 201, token, message: "User created successfully" });
     } catch (error) {
@@ -43,7 +43,7 @@ const login = async (req, res) => {
     if (!isValid) return res.status(401).send({ message: "Email and Password are required" })
     const { password: hashedPassword, ...userInfo } = user
 
-    const token =  jwt.sign(userInfo, process.env.SERCRET_KEY)
+    const token =  jwt.sign(userInfo, process.env.SECRET_KEY)
         return res.send({
             token,
             user: userInfo

@@ -11,14 +11,18 @@ const BookSchema = new Schema({
         index: true,
         required: true
     },
-    picture: {
+    genre: {
         type: String,
-        required: true
+        index: true,
     },
     review: {
         type: String,
-        idnex: true
+        index: true,
     },
+    picture: {
+        type: String,
+    },
+    
     likes: [
         {
             type: mongoose.Schema.Types.ObjectId,
@@ -29,13 +33,7 @@ const BookSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
-    },
-    genres: [
-        {
-            type: String,
-            index: true
-        }
-    ]
+    }
 }, {timestamps: true});
 
 module.exports = mongoose.model("Book", BookSchema);
