@@ -26,12 +26,12 @@ const BookSchema = new Schema({
     likes: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
+            ref: 'user'
         }
     ],
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'user',
         required: true
     }
 }, {timestamps: true});

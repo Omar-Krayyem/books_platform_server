@@ -10,6 +10,8 @@ app.use(cors())
 
 const authRoutes = require("./routes/auth.route")
 app.use("/auth", authRoutes)
+const bookRoutes = require("./routes/book.route")
+app.use("/books", bookRoutes)
 
 app.listen(process.env.PORT, (err) => {
     if (err) {
