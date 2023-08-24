@@ -2,10 +2,14 @@ const express = require("express")
 const app = express();
 require("dotenv").config()
 const mongoDb = require("./configs/mongodb.connection");
+const cors = require("cors")
+
 
 app.use(express.json())
+app.use(cors())
 
-
+const authRoutes = require("./routes/auth.route")
+app.use("/auth", authRoutes)
 
 app.listen(process.env.PORT, (err) => {
     if (err) {
