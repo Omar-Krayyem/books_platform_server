@@ -5,6 +5,7 @@ const authMiddleware = require("../middlewares/auth.middleware");
 
 router.get("/getAll", authMiddleware, bookControllers.getAll);
 router.get("/getRecommended", authMiddleware, bookControllers.getRecommended);
+router.get("/search/:searching", bookControllers.searchBooks);
 
 router.post("/:bookId/like", authMiddleware, bookControllers.likeBook);
 router.post("/:bookId/unlike", authMiddleware, bookControllers.unlikeBook);

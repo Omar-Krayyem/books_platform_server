@@ -35,7 +35,6 @@ const createBook = async (req, res) => {
 const getAll = async (req, res) => {
     try {
         const userId = req.user.id; 
-        console.log("User ID:", userId);
         const posts = await Book.find()
             .populate('user', 'username')
             .populate('likes')
@@ -139,10 +138,61 @@ const getRecommended = async (req, res) => {
     }
 };
 
+const searchBooks = async(req, res) => {
+    const currentUser = req.user;
+    try {
+        const searchingBook = req.params.searching
+        let books = await Book.find({
+            $or: [
+                {
+                    author: {
+                        $regex: searchingBook,
+                        $options: 'i'
+                    }
+                }, {
+                    review: {
+                        $regex: searchingBook,
+                        $options: 'i'
+                    }
+                }, {
+                    genre: {
+                        $regex: searchingBook,
+                        $options: 'i'
+                    }
+                }
+            ]
+        })
+
+        books.forEach(book => {
+            book.likeCount = book.likes.length;
+            book.isLikedByUser = book.likes.includes(currentUser);
+            delete book.likes;
+
+            // const author = book.user;
+            
+            // if (author.following) {
+            //     book.isFollowingAuthor = author.following.some(follower => follower === currentUser);
+            // } else {
+            //     book.isFollowingAuthor = false;
+            // }
+            // delete post.user.following;
+        });
+        res
+            .status(200)
+            .json(books)
+    } catch (error) {
+        res
+            .status(500)
+            .json(error)
+    }
+}
+
+
 module.exports = {
     createBook,
     getAll,
     unlikeBook,
     likeBook,
-    getRecommended
+    getRecommended,
+    searchBooks
 };
