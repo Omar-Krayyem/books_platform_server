@@ -110,10 +110,39 @@ const likeBook = async (req, res) => {
     }
 }
 
+const getRecommended = async (req, res) => {
+    const currentUser = req.user; 
+  
+    try {
+      const followingIds = currentUser.following;
+      const followingBooks = await Book.find({ user: { $in: followingIds } }).populate("user");
+
+      followingBooks.forEach(post => {
+        post.likeCount = post.likes.length;
+        post.isLikedByUser = post.likes.includes(currentUser._id);
+        delete post.likes;
+
+        const author = post.user;
+        
+        if (author.following) {
+            post.isFollowingAuthor = author.following.some(follower => follower === currentUser._id);
+        } else {
+            post.isFollowingAuthor = false;
+        }
+        delete post.user.following;
+      });
+
+
+      res.status(200).json(followingBooks);
+    } catch (error) {
+      res.status(500).json({ message: 'An error occurred while fetching following books.' });
+    }
+};
 
 module.exports = {
     createBook,
     getAll,
     unlikeBook,
-    likeBook
+    likeBook,
+    getRecommended
 };
