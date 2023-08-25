@@ -12,6 +12,8 @@ const authRoutes = require("./routes/auth.route")
 app.use("/auth", authRoutes)
 const bookRoutes = require("./routes/book.route")
 app.use("/books", bookRoutes)
+const userRoutes = require("./routes/users.route")
+app.use("/users", userRoutes)
 
 app.listen(process.env.PORT, (err) => {
     if (err) {
