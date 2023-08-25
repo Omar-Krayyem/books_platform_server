@@ -3,32 +3,21 @@ const User = require("../models/user.model");
 
 
 const createBook = async (req, res) => {
-
-    const { title, author, genre, review, image} = req.body;
-    // let name = 'book 2';
-    // let author = 'mhmd';
-    // let image = 'mhmd.jpg';
-    // let review = 'nice book';
-    // let genre = 'novel' 
-    // let user = '64e5f438edcb4c17bfe2e04b';
-    const user = await User.findById(req.user.id);
-
-    image = 'omar'
+    const { title, author, genre, review} = req.body;
+    const user = req.user.id;
     
-    const post = new Book({ title, author, genre, review, image, user });
-
-    console.log(post);
+    const post = new Book({
+        title,
+        author,
+        genre,
+        review,
+        user
+    })
     try {
-        const savedPost = await post.save();
-        await user.updateOne({
-            $push: {
-                posts: savedPost._id
-            }
-        });
-        return res.status(201).json(savedPost);
+        const savedBook = await post.save();
+        return res.status(201).json(savedBook);
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: 'An error occurred.' });
+        return res.status(500).json({ message: 'An error occurred while posting the book.' });
     }
 }
 
