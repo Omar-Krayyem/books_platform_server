@@ -51,6 +51,41 @@ const getAll = async (req, res) => {
     }
 }
 
+const getBook = async (req, res) => {
+    const postId = '64e62921fafd88d85f855093'
+    // const { postId } = req.params;
+    const userId = req.user.id; 
+
+  try {
+    const post = await Book.findById(postId)
+            .populate('user', 'username')
+            .populate('likes')
+            .lean();
+
+        if (!post) {
+            return res.status(404).json({ message: 'Book not found.' });
+        }
+
+        post.likeCount = post.likes.length;
+        post.isLikedByUser = post.likes.some(like => like.toString() === userId.toString()); // Compare as strings
+        delete post.likes;
+
+        const author = post.user;
+        
+        if (author.following) {
+            post.isFollowingAuthor = author.following.some(follower => follower.toString() === userId.toString()); // Compare as strings
+        } else {
+            post.isFollowingAuthor = false;
+        }
+        delete post.user.following;
+
+        res.status(200).json(post);
+  } catch (error) {
+    res.status(500).json({ message: 'An error occurred while fetching the post.' });
+  }
+}
+
+
 const unlikeBook = async (req, res) => {
     const { bookId } = req.params;
     const currentUser = req.user; 
@@ -183,5 +218,6 @@ module.exports = {
     unlikeBook,
     likeBook,
     getRecommended,
-    searchBooks
+    searchBooks,
+    getBook
 };
